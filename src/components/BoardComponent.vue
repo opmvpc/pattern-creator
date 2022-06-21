@@ -46,6 +46,20 @@ onMounted(() => {
   window.addEventListener("resize", () => {
     cellSize.value = getContainerSize();
   });
+  const cells = document.querySelectorAll(
+    ".cell"
+  ) as NodeListOf<HTMLDivElement>;
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].addEventListener("pointerover", (event) => {
+      if ((event as PointerEvent).buttons === 1) {
+        const elem = event.target as HTMLDivElement;
+        const index = parseInt(
+          elem.attributes.getNamedItem("data-index")?.value ?? ""
+        );
+        handleCellClick(event, index);
+      }
+    });
+  }
 });
 </script>
 
@@ -58,7 +72,8 @@ onMounted(() => {
       <div
         class="cell flex items-center justify-center border border-black cursor-pointer"
         v-for="n in size * size"
-        @click="handleCellClick($event, n - 1)"
+        :data-index="n"
+        @mousedown.prevent="handleCellClick($event, n)"
       ></div>
     </div>
     <div class="my-8 flex items-center justify-center">
