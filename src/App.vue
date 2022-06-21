@@ -7,6 +7,10 @@ import { Board } from "./models/Board";
 
 const size = ref(10);
 const board = ref(new Board(size.value));
+
+const createBoard = () => {
+  board.value = new Board(size.value);
+};
 </script>
 
 <template>
@@ -23,7 +27,7 @@ const board = ref(new Board(size.value));
       </div>
       <BoardComponent
         :size="size"
-        @board:clear="board = new Board(size)"
+        @board:clear="createBoard()"
         @board:toggle="(index: number) => board.toggleCell(index)"
       ></BoardComponent>
       <CodeComponent :code="board.getCellsJSON()"></CodeComponent>
