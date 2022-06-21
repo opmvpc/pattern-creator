@@ -5,7 +5,7 @@ const props = defineProps({
   size: { type: Number, required: true },
 });
 
-const emit = defineEmits(["update:size", "board:clear", "board:toggle"]);
+const emit = defineEmits(["board:clear", "board:toggle"]);
 
 const cellSize = ref(0);
 
