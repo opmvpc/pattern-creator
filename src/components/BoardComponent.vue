@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, watch } from "vue";
+import { defineProps, onMounted, onUnmounted, ref, watch } from "vue";
 
 const props = defineProps({
   size: { type: Number, required: true },
@@ -33,12 +33,24 @@ const clearBoard = () => {
 
 const handleCellClick = (event: Event, index: number) => {
   const elem = event.target as HTMLDivElement;
+  drawOnCell(elem, index);
+};
+
+const handleCellDragToDraw = (event: PointerEvent, index: number) => {
+  if (event.buttons !== 1) {
+    return;
+  }
+  const elem = event.target as HTMLDivElement;
+  drawOnCell(elem, index);
+};
+
+const drawOnCell = (elem: HTMLDivElement, index: number) => {
   if (elem.style.backgroundColor === "black") {
     elem.style.backgroundColor = "white";
   } else {
     elem.style.backgroundColor = "black";
   }
-  emit("board:toggle", index);
+  emit("board:toggle", index - 1);
 };
 
 onMounted(() => {
@@ -46,20 +58,10 @@ onMounted(() => {
   window.addEventListener("resize", () => {
     cellSize.value = getContainerSize();
   });
-  const cells = document.querySelectorAll(
-    ".cell"
-  ) as NodeListOf<HTMLDivElement>;
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].addEventListener("pointerover", (event) => {
-      if ((event as PointerEvent).buttons === 1) {
-        const elem = event.target as HTMLDivElement;
-        const index = parseInt(
-          elem.attributes.getNamedItem("data-index")?.value ?? ""
-        );
-        handleCellClick(event, index);
-      }
-    });
-  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", () => {});
 });
 </script>
 
@@ -72,8 +74,8 @@ onMounted(() => {
       <div
         class="cell flex items-center justify-center border border-black cursor-pointer"
         v-for="n in size * size"
-        :data-index="n"
         @mousedown.prevent="handleCellClick($event, n)"
+        @pointerover.prevent="handleCellDragToDraw($event, n)"
       ></div>
     </div>
     <div class="my-8 flex items-center justify-center">
