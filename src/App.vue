@@ -23,7 +23,7 @@ const createBoard = () => {
         :size="size"
         @update:size="(newSize) => (size = parseInt(newSize))"
       ></BoardSizeComponent>
-      <div id="board-grid" class="xl:w-3/5 mx-auto">
+      <div id="board-grid" class="w-full xl:w-3/5 mx-auto">
         <BoardComponent
           :size="size"
           @board:clear="createBoard()"
