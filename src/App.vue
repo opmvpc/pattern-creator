@@ -19,18 +19,18 @@ const createBoard = () => {
       <h1 class="text-center font-bold text-2xl">Pattern Creator</h1>
     </header>
     <main class="grid grid-cols-1 gap-8">
-      <div id="board-grid" class="xl:w-3/5">
-        <BoardSizeComponent
-          :size="size"
-          @update:size="(newSize) => (size = parseInt(newSize))"
-        ></BoardSizeComponent>
-      </div>
-      <BoardComponent
+      <BoardSizeComponent
         :size="size"
-        @board:clear="createBoard()"
-        @board:toggle="(index: number) => board.toggleCell(index)"
-      ></BoardComponent>
-      <CodeComponent :code="board.getCellsJSON()"></CodeComponent>
+        @update:size="(newSize) => (size = parseInt(newSize))"
+      ></BoardSizeComponent>
+      <div id="board-grid" class="xl:w-3/5 mx-auto">
+        <BoardComponent
+          :size="size"
+          @board:clear="createBoard()"
+          @board:toggle="(index: number) => board.toggleCell(index)"
+        ></BoardComponent>
+        <CodeComponent :code="board.getCellsJSON()"></CodeComponent>
+      </div>
     </main>
   </div>
 </template>
