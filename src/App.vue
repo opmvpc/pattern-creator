@@ -28,6 +28,7 @@ const createBoard = () => {
           :size="size"
           @board:clear="createBoard()"
           @board:toggle="(index: number) => board.toggleCell(index)"
+          @board:invert="() => board.invert()"
         ></BoardComponent>
         <CodeComponent :code="board.getCellsJSON()"></CodeComponent>
       </div>

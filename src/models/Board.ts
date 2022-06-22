@@ -11,7 +11,7 @@ export class Board {
   }
 
   public toggleCell(index: number): void {
-    this.cells[index].setValue(!this.cells[index].getValue());
+    this.cells[index].invert();
   }
 
   public getCellsJSON(): string {
@@ -23,5 +23,9 @@ export class Board {
     cells = cells.map((row) => row.map((cell) => (cell.getValue() ? 1 : 0)));
 
     return JSON.stringify(cells);
+  }
+
+  public invert(): void {
+    this.cells.map((cell) => cell.invert());
   }
 }

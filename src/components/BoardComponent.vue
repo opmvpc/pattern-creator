@@ -5,7 +5,7 @@ const props = defineProps({
   size: { type: Number, required: true },
 });
 
-const emit = defineEmits(["board:clear", "board:toggle"]);
+const emit = defineEmits(["board:clear", "board:toggle", "board:invert"]);
 
 const cellSize = ref(0);
 
@@ -53,6 +53,20 @@ const drawOnCell = (elem: HTMLDivElement, index: number) => {
   emit("board:toggle", index - 1);
 };
 
+const invert = () => {
+  const cells = document.querySelectorAll(
+    ".cell"
+  ) as NodeListOf<HTMLDivElement>;
+  for (const cell of cells) {
+    if (cell.style.backgroundColor === "black") {
+      cell.style.backgroundColor = "white";
+    } else {
+      cell.style.backgroundColor = "black";
+    }
+  }
+  emit("board:invert");
+};
+
 onMounted(() => {
   cellSize.value = getContainerSize();
   window.addEventListener("resize", () => {
@@ -78,12 +92,18 @@ onUnmounted(() => {
         @pointerover.prevent="handleCellDragToDraw($event, n)"
       ></div>
     </div>
-    <div class="my-8 flex items-center justify-center">
+    <div class="my-8 flex items-center justify-center space-x-8">
       <button
         class="bg-teal-300 text-teal-800 font-bold shadow px-4 py-2 rounded-md"
         @click="clearBoard"
       >
         Clear
+      </button>
+      <button
+        class="bg-teal-100 text-teal-800 font-bold shadow px-4 py-2 rounded-md"
+        @click="invert"
+      >
+        Inverse
       </button>
     </div>
   </div>

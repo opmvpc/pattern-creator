@@ -9,7 +9,7 @@ export class Cell {
     return this.value;
   }
 
-  public setValue(value: boolean) {
-    this.value = value;
+  public invert(): void {
+    this.value = !this.value;
   }
 }
