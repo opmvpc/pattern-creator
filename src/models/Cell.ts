@@ -1,8 +1,8 @@
 export class Cell {
   public value: boolean;
 
-  constructor() {
-    this.value = false;
+  constructor(value: boolean = false) {
+    this.value = value;
   }
 
   public getValue(): boolean {

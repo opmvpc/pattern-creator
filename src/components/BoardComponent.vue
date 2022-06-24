@@ -1,76 +1,61 @@
 <script setup lang="ts">
 import { defineProps, onMounted, onUnmounted, ref, watch } from "vue";
+import ButtonComponent from "./ButtonComponent.vue";
+import type { Cell } from "@/models/Cell";
+import { computed } from "@vue/reactivity";
 
 const props = defineProps({
   size: { type: Number, required: true },
+  cells: { type: Array, required: true },
 });
 
 const emit = defineEmits(["board:clear", "board:toggle", "board:invert"]);
 
-const cellSize = ref(0);
-
-watch(props, () => {
-  cellSize.value = getContainerSize();
-  clearBoard();
+const cellWidth = ref(0);
+const colCount = computed(() => {
+  return props.size;
 });
 
-const getContainerSize = () => {
-  const containerWidth = (
-    document.querySelector("#board-grid") as HTMLDivElement
-  ).offsetWidth;
-  return Math.ceil(containerWidth / props.size) - 2;
+watch(colCount, () => {
+  cellWidth.value = computeCellWidth();
+});
+
+const computeCellWidth = () => {
+  const container = document.querySelector("#board-grid") as HTMLDivElement;
+  if (!container) {
+    return 0;
+  }
+  const containerWidth = container.offsetWidth;
+  return Math.ceil(containerWidth / colCount.value) - 2;
 };
 
 const clearBoard = () => {
   emit("board:clear");
-  const cells = document.querySelectorAll(
-    ".cell"
-  ) as NodeListOf<HTMLDivElement>;
-  for (const cell of cells) {
-    cell.style.backgroundColor = "white";
-  }
 };
 
 const handleCellClick = (event: Event, index: number) => {
-  const elem = event.target as HTMLDivElement;
-  drawOnCell(elem, index);
+  drawOnCell(index);
 };
 
 const handleCellDragToDraw = (event: PointerEvent, index: number) => {
   if (event.buttons !== 1) {
     return;
   }
-  const elem = event.target as HTMLDivElement;
-  drawOnCell(elem, index);
+  drawOnCell(index);
 };
 
-const drawOnCell = (elem: HTMLDivElement, index: number) => {
-  if (elem.style.backgroundColor === "black") {
-    elem.style.backgroundColor = "white";
-  } else {
-    elem.style.backgroundColor = "black";
-  }
-  emit("board:toggle", index - 1);
+const drawOnCell = (index: number) => {
+  emit("board:toggle", index);
 };
 
 const invert = () => {
-  const cells = document.querySelectorAll(
-    ".cell"
-  ) as NodeListOf<HTMLDivElement>;
-  for (const cell of cells) {
-    if (cell.style.backgroundColor === "black") {
-      cell.style.backgroundColor = "white";
-    } else {
-      cell.style.backgroundColor = "black";
-    }
-  }
   emit("board:invert");
 };
 
 onMounted(() => {
-  cellSize.value = getContainerSize();
+  cellWidth.value = computeCellWidth();
   window.addEventListener("resize", () => {
-    cellSize.value = getContainerSize();
+    cellWidth.value = computeCellWidth();
   });
 });
 
@@ -83,28 +68,21 @@ onUnmounted(() => {
   <div class="flex flex-col">
     <div
       class="grid mx-auto border border-black"
-      :style="`grid-template-columns: repeat(${size}, ${cellSize}px);grid-template-rows: repeat(${size}, ${cellSize}px);`"
+      :style="`grid-template-columns: repeat(${colCount}, ${cellWidth}px);grid-template-rows: repeat(${colCount}, ${cellWidth}px);`"
     >
       <div
         class="cell flex items-center justify-center border border-black cursor-pointer"
-        v-for="n in size * size"
+        v-for="(cell, n) in cells"
         @mousedown.prevent="handleCellClick($event, n)"
         @pointerover.prevent="handleCellDragToDraw($event, n)"
+        :style="`background-color: ${(cell as Cell).getValue() ? 'black' : 'white'};`"
       ></div>
     </div>
     <div class="my-8 flex items-center justify-center space-x-8">
-      <button
-        class="bg-teal-300 text-teal-800 font-bold shadow px-4 py-2 rounded-md"
-        @click="clearBoard"
-      >
+      <ButtonComponent class="bg-teal-300" @click="clearBoard">
         Clear
-      </button>
-      <button
-        class="bg-teal-100 text-teal-800 font-bold shadow px-4 py-2 rounded-md"
-        @click="invert"
-      >
-        Inverse
-      </button>
+      </ButtonComponent>
+      <ButtonComponent @click="invert"> Inverse </ButtonComponent>
     </div>
   </div>
 </template>

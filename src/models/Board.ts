@@ -14,7 +14,7 @@ export class Board {
     this.cells[index].invert();
   }
 
-  public getCellsJSON(): string {
+  public getCode(): string {
     const size = Math.sqrt(this.cells.length);
     let cells = [];
     for (let index = 0; index < size; index++) {
@@ -25,7 +25,29 @@ export class Board {
     return JSON.stringify(cells);
   }
 
+  public getCellsJSON(): string {
+    return JSON.stringify(this.cells.map((cell) => cell.getValue()));
+  }
+
   public invert(): void {
     this.cells.map((cell) => cell.invert());
+  }
+
+  public load(cells: boolean[] | null): this {
+    if (cells === null) {
+      return this;
+    }
+    this.cells = cells.map((value: boolean) => new Cell(value));
+    return this;
+  }
+
+  public get size(): number {
+    return Math.sqrt(this.cells.length);
+  }
+
+  public updateSize(size: number): void {
+    if (size !== this.size) {
+      this.cells = new Board(size).cells;
+    }
   }
 }
