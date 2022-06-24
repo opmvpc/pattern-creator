@@ -1,13 +1,14 @@
 import { Board } from "../Board";
 import type { Cell } from "../Cell";
-import type { UndoableCommand } from "./Contracts/UndoableCommand";
+import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
-export class ClearBoardCommand implements UndoableCommand {
+export class ClearBoardCommand extends AbstractUndoableCommand {
   private board: Board;
   private size: number;
   private savedBoard: Cell[];
 
   constructor(board: Board, size: number) {
+    super();
     this.board = board;
     this.size = size;
     this.savedBoard = board.cells;

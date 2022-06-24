@@ -1,10 +1,11 @@
 import type { Board } from "../Board";
-import type { Command } from "./Contracts/Command";
+import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
-export class InverseBoardCommand implements Command {
+export class InverseBoardCommand extends AbstractUndoableCommand {
   private board: Board;
 
   constructor(board: Board) {
+    super();
     this.board = board;
   }
 

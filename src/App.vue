@@ -12,6 +12,8 @@ import { Storage } from "./models/Storage";
 import { LoadCommand } from "./models/Commands/LoadCommand";
 import { ClearBoardCommand } from "./models/Commands/ClearBoardCommand";
 import { InverseBoardCommand } from "./models/Commands/InverseBoardCommand";
+import ControlsComponent from "./components/ControlsComponent.vue";
+import { ToggleCellCommand } from "./models/Commands/ToggleCellCommand";
 
 const commandInvoker = new Invoker();
 const size = ref(10);
@@ -20,9 +22,7 @@ const savedBoardsNames = ref(Storage.getBoardNames());
 const currentBoardName = ref("");
 
 const clearBoard = () => {
-  currentBoardName.value = "";
   commandInvoker.execute(new ClearBoardCommand(board.value, size.value));
-  commandInvoker.clear();
 };
 
 const saveBoard = (name: string) => {
@@ -39,11 +39,16 @@ const loadBoard = (name: string) => {
 
 const updateSize = (newSize: string) => {
   size.value = parseInt(newSize);
+  commandInvoker.clear();
   board.value.updateSize(size.value);
 };
 
 const invert = () => {
   commandInvoker.execute(new InverseBoardCommand(board.value));
+};
+
+const toggleCell = (index: number) => {
+  commandInvoker.execute(new ToggleCellCommand(board.value, index));
 };
 </script>
 
@@ -72,12 +77,16 @@ const invert = () => {
         <BoardComponent
           :size="size"
           :cells="board.cells"
-          @board:clear="clearBoard()"
-          @board:toggle="(index: number) => board.toggleCell(index)"
-          @board:invert="() => invert()"
+          @board:toggle="toggleCell"
         ></BoardComponent>
-        <CodeComponent :code="board.getCode()"></CodeComponent>
       </div>
+      <ControlsComponent
+        @board:clear="clearBoard"
+        @board:invert="invert"
+        @command:undo="() => commandInvoker.undo()"
+        @command:redo="() => commandInvoker.redo()"
+      ></ControlsComponent>
+      <CodeComponent :code="board.getCode()"></CodeComponent>
     </main>
   </div>
 </template>

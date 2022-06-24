@@ -1,8 +1,8 @@
-import type { Command } from "./Contracts/Command";
-import type { UndoableCommand } from "./Contracts/UndoableCommand";
+import type { CommandContract } from "./Contracts/CommandContract";
+import type { UndoableCommandContract } from "./Contracts/UndoableCommandContract";
 
 export class Invoker {
-  private commandsHistory: Command[];
+  private commandsHistory: CommandContract[];
   private currentCommandIndex: number;
 
   constructor() {
@@ -10,45 +10,43 @@ export class Invoker {
     this.currentCommandIndex = 0;
   }
 
-  public execute(command: Command): void {
+  public execute(command: CommandContract): void {
     if (!this.isLast) {
       this.commandsHistory.splice(this.currentCommandIndex + 1);
     }
 
-    if (command.hasOwnProperty("undo")) {
-      this.commandsHistory.push(command as UndoableCommand);
-      this.currentCommandIndex++;
+    if (command.undoable === true) {
+      this.commandsHistory.push(command);
+      this.currentCommandIndex = this.commandsHistory.length - 1;
     }
 
     command.execute();
+    console.log(this.currentCommandIndex);
+    console.log(this.commandsHistory);
   }
 
   public clear(): void {
     this.commandsHistory = [];
-    this.currentCommandIndex = 0;
+    this.currentCommandIndex = -1;
   }
 
-  private get current(): Command {
+  private get current(): CommandContract | undefined {
     return this.commandsHistory[this.currentCommandIndex];
   }
 
   public undo(): void {
-    if (
-      this.current &&
-      this.commandsHistory.length > 0 &&
-      this.current.hasOwnProperty("undo")
-    ) {
-      (this.current as UndoableCommand).undo();
+    if (this.current !== undefined && this.commandsHistory.length > 0) {
+      (this.current as UndoableCommandContract).undo();
       this.previous();
     }
   }
 
   private previous(): void {
-    this.currentCommandIndex = this.commandsHistory.length - 1;
+    this.currentCommandIndex--;
   }
 
   private next(): void {
-    if (this.isLast) {
+    if (this.hasNext) {
       this.currentCommandIndex++;
     }
   }
@@ -57,10 +55,18 @@ export class Invoker {
     return this.currentCommandIndex === this.commandsHistory.length - 1;
   }
 
+  private get hasNext(): boolean {
+    return this.currentCommandIndex < this.commandsHistory.length - 1;
+  }
+
   public redo(): void {
-    if (this.current && this.commandsHistory.length > 0 && !this.isLast) {
-      this.current.execute();
+    if (this.commandsHistory.length > 0 && this.hasNext) {
       this.next();
+      if (this.current !== undefined) {
+        console.log(this.currentCommandIndex);
+
+        (this.current as UndoableCommandContract).execute();
+      }
     }
   }
 }

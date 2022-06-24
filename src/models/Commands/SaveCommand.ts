@@ -1,11 +1,12 @@
 import { Storage } from "../Storage";
-import type { Command } from "./Contracts/Command";
+import { AbstractCommand } from "./AbstractCommand";
 
-export class SaveCommand implements Command {
+export class SaveCommand extends AbstractCommand {
   private name: string;
   private board: string;
 
   constructor(name: string, board: string) {
+    super();
     this.name = name;
     this.board = board;
   }

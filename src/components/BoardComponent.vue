@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { defineProps, onMounted, onUnmounted, ref, watch } from "vue";
-import ButtonComponent from "./ButtonComponent.vue";
 import type { Cell } from "@/models/Cell";
 import { computed } from "@vue/reactivity";
 
@@ -9,7 +8,7 @@ const props = defineProps({
   cells: { type: Array, required: true },
 });
 
-const emit = defineEmits(["board:clear", "board:toggle", "board:invert"]);
+const emit = defineEmits(["board:toggle"]);
 
 const cellWidth = ref(0);
 const colCount = computed(() => {
@@ -29,10 +28,6 @@ const computeCellWidth = () => {
   return Math.ceil(containerWidth / colCount.value) - 2;
 };
 
-const clearBoard = () => {
-  emit("board:clear");
-};
-
 const handleCellClick = (event: Event, index: number) => {
   drawOnCell(index);
 };
@@ -46,10 +41,6 @@ const handleCellDragToDraw = (event: PointerEvent, index: number) => {
 
 const drawOnCell = (index: number) => {
   emit("board:toggle", index);
-};
-
-const invert = () => {
-  emit("board:invert");
 };
 
 onMounted(() => {
@@ -77,12 +68,6 @@ onUnmounted(() => {
         @pointerover.prevent="handleCellDragToDraw($event, n)"
         :style="`background-color: ${(cell as Cell).getValue() ? 'black' : 'white'};`"
       ></div>
-    </div>
-    <div class="my-8 flex items-center justify-center space-x-8">
-      <ButtonComponent class="bg-teal-300" @click="clearBoard">
-        Clear
-      </ButtonComponent>
-      <ButtonComponent @click="invert"> Inverse </ButtonComponent>
     </div>
   </div>
 </template>

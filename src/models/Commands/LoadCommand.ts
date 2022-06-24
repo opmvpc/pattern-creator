@@ -1,14 +1,15 @@
 import type { Ref } from "vue";
 import { Board } from "../Board";
 import { Storage } from "../Storage";
-import type { Command } from "./Contracts/Command";
+import { AbstractCommand } from "./AbstractCommand";
 
-export class LoadCommand implements Command {
+export class LoadCommand extends AbstractCommand {
   private name: string;
   private board: Ref<Board>;
   private size: Ref<number>;
 
   constructor(name: string, board: Ref<Board>, size: Ref<number>) {
+    super();
     this.name = name;
     this.board = board;
     this.size = size;

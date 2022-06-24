@@ -1,9 +1,11 @@
-import type { UndoableCommand } from "./Contracts/UndoableCommand";
+import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
+import type { UndoableCommandContract } from "./Contracts/UndoableCommandContract";
 
-export abstract class CompositeCommand implements UndoableCommand {
-  protected commands: UndoableCommand[];
+export abstract class CompositeCommand extends AbstractUndoableCommand {
+  protected commands: UndoableCommandContract[];
 
   constructor() {
+    super();
     this.commands = [];
   }
 
