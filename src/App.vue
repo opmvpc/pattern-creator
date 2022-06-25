@@ -2,7 +2,7 @@
 import BoardComponent from "@/components/BoardComponent.vue";
 import BoardSizeComponent from "@/components/BoardSizeComponent.vue";
 import CodeComponent from "@/components/CodeComponent.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Board } from "./models/Board";
 import SaveComponent from "./components/SaveComponent.vue";
 import LoadComponent from "./components/LoadComponent.vue";
@@ -13,14 +13,22 @@ import { LoadCommand } from "./models/Commands/LoadCommand";
 import { ClearBoardCommand } from "./models/Commands/ClearBoardCommand";
 import { InverseBoardCommand } from "./models/Commands/InverseBoardCommand";
 import ControlsComponent from "./components/ControlsComponent.vue";
-import { ToggleCellCommand } from "./models/Commands/ToggleCellCommand";
 import { DrawCommand } from "./models/Commands/DrawCommand";
+import { UpdateBoardFromCodeCommand } from "./models/Commands/UpdateBoardFromCodeCommand";
+import { computed } from "@vue/reactivity";
+import ErrorMessageComponent from "./components/ErrorMessageComponent.vue";
 
 const commandInvoker = new Invoker();
 const size = ref(10);
 const board = ref(new Board(size.value));
 const savedBoardsNames = ref(Storage.getBoardNames());
 const currentBoardName = ref("");
+const errorMessage = ref("");
+const code = ref(board.value.getCode());
+
+watch(board.value, () => {
+  code.value = board.value.getCode();
+});
 
 const clearBoard = () => {
   commandInvoker.execute(new ClearBoardCommand(board.value, size.value));
@@ -48,12 +56,15 @@ const invert = () => {
   commandInvoker.execute(new InverseBoardCommand(board.value));
 };
 
-const toggleCell = (index: number) => {
-  commandInvoker.execute(new ToggleCellCommand(board.value, index));
-};
-
 const draw = (points: number[]) => {
   commandInvoker.execute(new DrawCommand(board.value, points));
+};
+
+const updateBoardFromCode = (newCode: string) => {
+  commandInvoker.execute(
+    new UpdateBoardFromCodeCommand(board.value, code, newCode, errorMessage)
+  );
+  console.log(errorMessage.value);
 };
 </script>
 
@@ -91,7 +102,13 @@ const draw = (points: number[]) => {
         @command:undo="() => commandInvoker.undo()"
         @command:redo="() => commandInvoker.redo()"
       ></ControlsComponent>
-      <CodeComponent :code="board.getCode()"></CodeComponent>
+      <ErrorMessageComponent
+        :error-message="errorMessage"
+      ></ErrorMessageComponent>
+      <CodeComponent
+        :code="code"
+        @code:update="updateBoardFromCode"
+      ></CodeComponent>
     </main>
   </div>
 </template>

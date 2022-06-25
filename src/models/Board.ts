@@ -50,4 +50,39 @@ export class Board {
       this.cells = new Board(size).cells;
     }
   }
+
+  public fromCode(code: string): void {
+    let cells = null;
+    try {
+      cells = JSON.parse(code) as any;
+    } catch (error) {
+      throw new Error("Can't parse code");
+    }
+
+    if (this.isCellsCodeCorrect(cells)) {
+      this.cells = cells
+        .flat()
+        .map((value: number) => new Cell(Boolean(value)));
+    }
+  }
+
+  public isCellsCodeCorrect(cells: any): boolean {
+    if (!Array.isArray(cells)) {
+      throw new Error("Code needs to be an array");
+    }
+    if (cells.length !== this.size) {
+      throw new Error("Wrong number of rows");
+    }
+    for (const row of cells) {
+      if (row.length !== this.size) {
+        throw new Error("Wrong number of columns");
+      }
+      for (const cell of row) {
+        if (cell !== 0 && cell !== 1) {
+          throw new Error("Cells values should be 0 or 1");
+        }
+      }
+    }
+    return true;
+  }
 }
