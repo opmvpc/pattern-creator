@@ -13,7 +13,7 @@ import { reactive } from "vue";
 export const init = (): AppState => {
   return reactive({
     commandInvoker: new Invoker(),
-    size: 10,
+    size: { width: 10 },
     board: new Board(10),
     savedBoardsNames: Storage.getBoardNames(),
     currentBoardName: "",
@@ -34,13 +34,13 @@ export const commandsInit = (state: AppState) => {
     },
 
     loadBoard: (name: string) => {
-      state.commandInvoker.execute(new LoadCommand(name, state));
-      state.commandInvoker.clear();
       state.currentBoardName = name;
+      state.commandInvoker.execute(new LoadCommand(state));
+      state.commandInvoker.clear();
     },
 
     updateSize: (newSize: string) => {
-      state.size = parseInt(newSize);
+      state.size = { width: parseInt(newSize) };
       state.commandInvoker.clear();
       state.board.updateSize(state.size);
     },

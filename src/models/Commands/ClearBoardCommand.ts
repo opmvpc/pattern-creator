@@ -5,13 +5,11 @@ import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
 export class ClearBoardCommand extends AbstractUndoableCommand {
   private board: Board;
-  private size: number;
   private savedBoard: Cell[];
 
   constructor(state: AppState) {
     super();
     this.board = state.board;
-    this.size = state.size;
     this.savedBoard = state.board.cells;
   }
 

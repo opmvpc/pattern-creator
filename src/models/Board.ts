@@ -1,5 +1,6 @@
 import { Cell } from "@/models/Cell";
 import type { Code } from "./Code";
+import type { Size } from "./Size";
 
 export class Board {
   public cells: Cell[];
@@ -61,9 +62,9 @@ export class Board {
     return Math.sqrt(this.cells.length);
   }
 
-  public updateSize(size: number): void {
-    if (size !== this.size) {
-      this.cells = new Board(size).cells;
+  public updateSize(size: Size): void {
+    if (size.width !== this.size) {
+      this.cells = new Board(size.width).cells;
       this.code = this.getCode();
     }
   }

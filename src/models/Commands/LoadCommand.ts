@@ -1,23 +1,25 @@
 import type { AppState } from "../AppState";
-import { Board } from "../Board";
+import type { Board } from "../Board";
+import type { Size } from "../Size";
 import { Storage } from "../Storage";
 import { AbstractCommand } from "./AbstractCommand";
 
 export class LoadCommand extends AbstractCommand {
   private name: string;
   private board: Board;
-  private size: number;
+  private size: Size;
 
-  constructor(name: string, state: AppState) {
+  constructor(state: AppState) {
     super();
-    this.name = name;
+    this.name = state.currentBoardName;
     this.board = state.board;
     this.size = state.size;
   }
 
   execute(): void {
     const board = Storage.getBoard(this.name);
-    this.size = Math.sqrt(board?.length ?? 0);
-    this.board = new Board(this.size).load(board);
+
+    this.board = this.board.load(board);
+    this.size.width = Math.sqrt(board?.length ?? 0);
   }
 }

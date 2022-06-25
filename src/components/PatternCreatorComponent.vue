@@ -15,7 +15,7 @@ const commands = commandsInit(state);
 
 <template>
   <BoardSizeComponent
-    :size="state.size"
+    :size="state.size.width"
     @update:size="commands.updateSize"
   ></BoardSizeComponent>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -31,7 +31,7 @@ const commands = commandsInit(state);
   </div>
   <div id="board-grid" class="w-full xl:w-3/5 mx-auto">
     <BoardComponent
-      :size="state.size"
+      :size="state.size.width"
       :cells="state.board.cells"
       @board:draw="commands.draw"
     ></BoardComponent>
