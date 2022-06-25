@@ -1,3 +1,4 @@
+import type { AppState } from "../AppState";
 import type { Board } from "../Board";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
@@ -6,9 +7,9 @@ export class ToggleCellCommand extends AbstractUndoableCommand {
   private index: number;
   undoable: boolean;
 
-  constructor(board: Board, index: number) {
+  constructor(index: number, state: AppState) {
     super();
-    this.board = board;
+    this.board = state.board;
     this.index = index;
     this.undoable = true;
   }

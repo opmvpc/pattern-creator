@@ -5,4 +5,7 @@ export abstract class AbstractUndoableCommand implements CommandContract {
 
   abstract execute(): void;
   abstract undo(): void;
+  getSavedError(): string {
+    return "";
+  }
 }

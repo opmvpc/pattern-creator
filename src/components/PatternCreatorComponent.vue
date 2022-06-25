@@ -45,7 +45,7 @@ const commands = commandsInit(state);
     @command:redo="() => state.commandInvoker.redo()"
   ></ControlsComponent>
   <ErrorMessageComponent
-    :error-message="state.error.message"
+    :error-message="state.commandInvoker.error.message"
   ></ErrorMessageComponent>
   <CodeComponent
     :code="state.board.code.body"

@@ -9,5 +9,4 @@ export interface AppState {
   board: Board;
   savedBoardsNames: string[];
   currentBoardName: string;
-  error: AppError;
 }

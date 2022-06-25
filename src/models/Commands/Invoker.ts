@@ -1,18 +1,28 @@
+import type { AppError } from "../AppError";
+import { Board } from "../Board";
 import type { CommandContract } from "./Contracts/CommandContract";
 import type { UndoableCommandContract } from "./Contracts/UndoableCommandContract";
+import { LoadCommand } from "./LoadCommand";
+import { OriginalBoardCommand } from "./OriginalBoardCommand";
 
 export class Invoker {
   public commandsHistory: CommandContract[];
+  public errorsHistory: AppError[];
   public currentCommandIndex: number;
+  public error: AppError;
 
   constructor() {
     this.commandsHistory = [];
+    this.errorsHistory = [];
     this.currentCommandIndex = -1;
+    this.error = { message: "" };
+    this.execute(new OriginalBoardCommand());
   }
 
   public execute(command: CommandContract): void {
     if (!this.isLast) {
       this.commandsHistory.splice(this.currentCommandIndex + 1);
+      this.errorsHistory.splice(this.currentCommandIndex + 1);
     }
 
     if (command.undoable === true) {
@@ -20,14 +30,22 @@ export class Invoker {
       this.currentCommandIndex = this.commandsHistory.length - 1;
     }
 
-    console.log(this.commandsHistory);
-
     command.execute();
+
+    if (command.undoable === true) {
+      const errorMessage = (command as UndoableCommandContract).getSavedError();
+      this.errorsHistory.push({
+        message: errorMessage,
+      });
+      this.error.message = errorMessage;
+    }
   }
 
   public clear(): void {
     this.commandsHistory = [];
+    this.errorsHistory = [];
     this.currentCommandIndex = -1;
+    this.execute(new OriginalBoardCommand());
   }
 
   public get current(): CommandContract | undefined {
@@ -35,16 +53,15 @@ export class Invoker {
   }
 
   public undo(): void {
-    console.log(this.current);
-
     if (this.current !== undefined && this.hasPrevious) {
       (this.current as UndoableCommandContract).undo();
       this.previous();
+      this.error.message = this.errorsHistory[this.currentCommandIndex].message;
     }
   }
 
   public get hasPrevious(): boolean {
-    return this.currentCommandIndex >= 0;
+    return this.currentCommandIndex > 0;
   }
 
   public previous(): void {
@@ -58,9 +75,10 @@ export class Invoker {
       this.next();
       if (this.current !== undefined) {
         (this.current as UndoableCommandContract).execute();
+        this.error.message =
+          this.errorsHistory[this.currentCommandIndex].message;
       }
     }
-    console.log(this.current);
   }
 
   public next(): void {

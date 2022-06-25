@@ -1,20 +1,19 @@
 import type { AppState } from "../AppState";
-import type { Board } from "../Board";
 import { CompositeCommand } from "./CompositeCommand";
 import { ToggleCellCommand } from "./ToggleCellCommand";
 
 export class DrawCommand extends CompositeCommand {
-  private board: Board;
+  private state: AppState;
 
   constructor(points: number[], state: AppState) {
     super();
-    this.board = state.board;
+    this.state = state;
     this.createAndAddSubCommands(points);
   }
 
   private createAndAddSubCommands(points: number[]) {
     for (const point of points) {
-      const command = new ToggleCellCommand(this.board, point);
+      const command = new ToggleCellCommand(point, this.state);
       this.commands.push(command);
     }
   }

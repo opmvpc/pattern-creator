@@ -17,7 +17,6 @@ export const init = (): AppState => {
     board: new Board(10),
     savedBoardsNames: Storage.getBoardNames(),
     currentBoardName: "",
-    error: { message: "" },
   });
 };
 

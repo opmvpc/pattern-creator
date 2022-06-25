@@ -22,4 +22,8 @@ export class LoadCommand extends AbstractCommand {
     this.board = this.board.load(board);
     this.size.width = Math.sqrt(board?.length ?? 0);
   }
+
+  getBoard(): Board {
+    return this.board;
+  }
 }

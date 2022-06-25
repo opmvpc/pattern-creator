@@ -45,7 +45,7 @@ export class Board {
   }
 
   public clear(): void {
-    this.cells.map((cell) => cell.setValue(false));
+    this.cells = new Board(this.size).cells;
     this.code = this.getCode();
   }
 
