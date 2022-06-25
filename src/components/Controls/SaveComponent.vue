@@ -20,6 +20,7 @@ watch(props, () => {
     <input
       class="py-2 px-3 bg-gray-100 shadow-md w-full rounded-md"
       type="text"
+      name="pattern-name"
       v-model="name"
       placeholder="Name"
     />

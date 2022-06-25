@@ -7,10 +7,15 @@ import LoadComponent from "@/components/Controls/LoadComponent.vue";
 import ControlsComponent from "@/components/Controls/ControlsComponent.vue";
 import ErrorMessageComponent from "@/components/ErrorMessageComponent.vue";
 import type { AppState } from "@/models/AppState";
-import { init, commandsInit } from "@/components/patternCreator";
+import {
+  init,
+  commandsInit,
+  registerKeyboardShortcuts,
+} from "@/components/patternCreator";
 
 const state: AppState = init();
 const commands = commandsInit(state);
+registerKeyboardShortcuts(state, commands);
 </script>
 
 <template>
@@ -21,11 +26,11 @@ const commands = commandsInit(state);
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
     <SaveComponent
       @board:save="commands.saveBoard"
-      :selected="state.currentBoardName"
+      :selected="state.currentBoardName.name"
     ></SaveComponent>
     <LoadComponent
       :savedBoardsNames="state.savedBoardsNames"
-      :selected="state.currentBoardName"
+      :selected="state.currentBoardName.name"
       @board:load="commands.loadBoard"
     ></LoadComponent>
   </div>
