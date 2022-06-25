@@ -17,10 +17,4 @@ export class DrawCommand extends CompositeCommand {
       this.commands.push(command);
     }
   }
-
-  execute(): void {
-    for (const command of this.commands) {
-      command.execute();
-    }
-  }
 }
