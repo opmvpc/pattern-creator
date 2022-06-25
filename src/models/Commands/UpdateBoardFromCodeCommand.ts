@@ -1,45 +1,75 @@
-import type { Ref } from "vue";
+import type { AppError } from "../AppError";
+import type { AppState } from "../AppState";
 import type { Board } from "../Board";
 import type { Cell } from "../Cell";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
 export class UpdateBoardFromCodeCommand extends AbstractUndoableCommand {
   private board: Board;
-  private code: Ref<string>;
   private newCode: string;
-  private savedCode: string;
-  private errorMessage: Ref<string>;
-  private savedBoard: Cell[];
+  private savedOldCode: string;
+  private savedNewCode: string;
+  private error: AppError;
+  private savedOldBoard: Cell[];
+  private savedNewBoard: Cell[];
+  private savedError: string;
 
-  constructor(
-    board: Board,
-    code: Ref<string>,
-    newCode: string,
-    errorMessage: Ref<string>
-  ) {
+  constructor(newCode: string, state: AppState) {
     super();
-    this.board = board;
-    this.code = code;
+    this.board = state.board;
     this.newCode = newCode;
-    this.savedCode = this.code.value;
-    this.errorMessage = errorMessage;
-    this.savedBoard = board.cells;
+    this.savedOldCode = "";
+    this.savedNewCode = "";
+    this.error = state.error;
+    this.savedOldBoard = [];
+    this.savedNewBoard = [];
+    this.savedError = "";
   }
 
   execute(): void {
+    if (this.savedOldBoard.length > 0) {
+      console.log("redo");
+
+      if (this.savedError.length > 0) {
+        this.error.message = this.savedError;
+      } else {
+        this.error.message = "";
+      }
+      this.board.code.body = this.savedNewCode;
+      this.board.cells = this.savedNewBoard;
+      return;
+    }
+
+    this.savedOldBoard = this.board.cells;
+    this.savedNewCode = this.newCode;
+    this.savedOldCode = this.board.code.body;
+
     try {
       this.board.fromCode(this.newCode);
     } catch (error: any) {
-      this.errorMessage.value = (error as Error).message;
-      this.savedCode = this.newCode;
+      this.savedError = (error as Error).message;
+      this.error.message = this.savedError;
+      this.savedNewBoard = this.savedOldBoard;
+      this.board.code.body = this.newCode;
+      console.log(this.error.message);
+
       return;
     }
-    this.errorMessage.value = "";
-    this.code.value = this.newCode;
+    this.savedNewBoard = this.board.cells;
+    this.error.message = "";
+    this.board.code.body = this.newCode;
   }
 
   undo(): void {
-    this.board.cells = this.savedBoard;
-    this.code.value = this.savedCode;
+    console.log("undo");
+
+    this.board.cells = this.savedOldBoard;
+    if (this.savedError.length > 0) {
+      this.error.message = this.savedError;
+      this.board.code.body = this.savedOldCode;
+    } else {
+      this.error.message = "";
+      this.board.code.body = this.savedOldCode;
+    }
   }
 }

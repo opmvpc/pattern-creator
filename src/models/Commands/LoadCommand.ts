@@ -1,23 +1,23 @@
-import type { Ref } from "vue";
+import type { AppState } from "../AppState";
 import { Board } from "../Board";
 import { Storage } from "../Storage";
 import { AbstractCommand } from "./AbstractCommand";
 
 export class LoadCommand extends AbstractCommand {
   private name: string;
-  private board: Ref<Board>;
-  private size: Ref<number>;
+  private board: Board;
+  private size: number;
 
-  constructor(name: string, board: Ref<Board>, size: Ref<number>) {
+  constructor(name: string, state: AppState) {
     super();
     this.name = name;
-    this.board = board;
-    this.size = size;
+    this.board = state.board;
+    this.size = state.size;
   }
 
   execute(): void {
     const board = Storage.getBoard(this.name);
-    this.size.value = Math.sqrt(board?.length ?? 0);
-    this.board.value = new Board(this.size.value).load(board);
+    this.size = Math.sqrt(board?.length ?? 0);
+    this.board = new Board(this.size).load(board);
   }
 }

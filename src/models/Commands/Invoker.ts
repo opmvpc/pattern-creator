@@ -2,8 +2,8 @@ import type { CommandContract } from "./Contracts/CommandContract";
 import type { UndoableCommandContract } from "./Contracts/UndoableCommandContract";
 
 export class Invoker {
-  private commandsHistory: CommandContract[];
-  private currentCommandIndex: number;
+  public commandsHistory: CommandContract[];
+  public currentCommandIndex: number;
 
   constructor() {
     this.commandsHistory = [];
@@ -20,6 +20,8 @@ export class Invoker {
       this.currentCommandIndex = this.commandsHistory.length - 1;
     }
 
+    console.log(this.commandsHistory);
+
     command.execute();
   }
 
@@ -28,22 +30,24 @@ export class Invoker {
     this.currentCommandIndex = -1;
   }
 
-  private get current(): CommandContract | undefined {
+  public get current(): CommandContract | undefined {
     return this.commandsHistory[this.currentCommandIndex];
   }
 
   public undo(): void {
+    console.log(this.current);
+
     if (this.current !== undefined && this.hasPrevious) {
       (this.current as UndoableCommandContract).undo();
       this.previous();
     }
   }
 
-  private get hasPrevious(): boolean {
+  public get hasPrevious(): boolean {
     return this.currentCommandIndex >= 0;
   }
 
-  private previous(): void {
+  public previous(): void {
     if (this.hasPrevious) {
       this.currentCommandIndex--;
     }
@@ -56,19 +60,20 @@ export class Invoker {
         (this.current as UndoableCommandContract).execute();
       }
     }
+    console.log(this.current);
   }
 
-  private next(): void {
+  public next(): void {
     if (this.hasNext) {
       this.currentCommandIndex++;
     }
   }
 
-  private get isLast(): boolean {
+  public get isLast(): boolean {
     return this.currentCommandIndex === this.commandsHistory.length - 1;
   }
 
-  private get hasNext(): boolean {
+  public get hasNext(): boolean {
     return this.currentCommandIndex < this.commandsHistory.length - 1;
   }
 }

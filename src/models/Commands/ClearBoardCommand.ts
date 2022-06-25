@@ -1,4 +1,5 @@
-import { Board } from "../Board";
+import type { AppState } from "../AppState";
+import type { Board } from "../Board";
 import type { Cell } from "../Cell";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
@@ -7,11 +8,11 @@ export class ClearBoardCommand extends AbstractUndoableCommand {
   private size: number;
   private savedBoard: Cell[];
 
-  constructor(board: Board, size: number) {
+  constructor(state: AppState) {
     super();
-    this.board = board;
-    this.size = size;
-    this.savedBoard = board.cells;
+    this.board = state.board;
+    this.size = state.size;
+    this.savedBoard = state.board.cells;
   }
 
   execute(): void {
@@ -20,7 +21,7 @@ export class ClearBoardCommand extends AbstractUndoableCommand {
       cell.style.backgroundColor = "white";
     }
 
-    this.board.cells = new Board(this.size).cells;
+    this.board.clear();
   }
 
   undo(): void {

@@ -1,20 +1,24 @@
 import { Cell } from "@/models/Cell";
+import type { Code } from "./Code";
 
 export class Board {
   public cells: Cell[];
+  public code: Code;
 
   constructor(size: number) {
     this.cells = [];
     for (let i = 0; i < size * size; i++) {
       this.cells[i] = new Cell();
     }
+    this.code = this.getCode();
   }
 
   public toggleCell(index: number): void {
     this.cells[index].invert();
+    this.code = this.getCode();
   }
 
-  public getCode(): string {
+  public getCode(): Code {
     const size = Math.sqrt(this.cells.length);
     let cells = [];
     for (let index = 0; index < size; index++) {
@@ -22,7 +26,12 @@ export class Board {
     }
     cells = cells.map((row) => row.map((cell) => (cell.getValue() ? 1 : 0)));
 
-    return JSON.stringify(cells);
+    return {
+      body: (JSON.stringify(cells) as any)
+        .replaceAll("],", "],\n\t")
+        .replace(/^\[/, "[\n\t")
+        .replace(/\]$/, "\n]"),
+    };
   }
 
   public getCellsJSON(): string {
@@ -31,6 +40,12 @@ export class Board {
 
   public invert(): void {
     this.cells.map((cell) => cell.invert());
+    this.code = this.getCode();
+  }
+
+  public clear(): void {
+    this.cells.map((cell) => cell.setValue(false));
+    this.code = this.getCode();
   }
 
   public load(cells: boolean[] | null): this {
@@ -38,6 +53,7 @@ export class Board {
       return this;
     }
     this.cells = cells.map((value: boolean) => new Cell(value));
+    this.code = this.getCode();
     return this;
   }
 
@@ -48,6 +64,7 @@ export class Board {
   public updateSize(size: number): void {
     if (size !== this.size) {
       this.cells = new Board(size).cells;
+      this.code = this.getCode();
     }
   }
 

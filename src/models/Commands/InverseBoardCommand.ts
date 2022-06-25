@@ -1,12 +1,13 @@
+import type { AppState } from "../AppState";
 import type { Board } from "../Board";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
 export class InverseBoardCommand extends AbstractUndoableCommand {
   private board: Board;
 
-  constructor(board: Board) {
+  constructor(state: AppState) {
     super();
-    this.board = board;
+    this.board = state.board;
   }
 
   execute(): void {
