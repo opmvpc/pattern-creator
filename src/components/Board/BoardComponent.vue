@@ -58,15 +58,17 @@ const handleStopDrawing = () => {
   pointsToDraw = [];
 };
 
+const resizeHandler = () => {
+  cellWidth.value = computeCellWidth();
+};
+
 onMounted(() => {
   cellWidth.value = computeCellWidth();
-  window.addEventListener("resize", () => {
-    cellWidth.value = computeCellWidth();
-  });
+  window.addEventListener("resize", resizeHandler);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("resize", () => {});
+  window.removeEventListener("resize", resizeHandler);
 });
 </script>
 
