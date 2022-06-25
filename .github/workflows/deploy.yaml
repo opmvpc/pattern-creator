@@ -1,0 +1,13 @@
+- name: Deploy
+  on:
+    push:
+      branches:
+        - master
+  uses: ktomk/run-travis-yml@v1
+  with:
+    file: .travis.yml
+    steps: |
+      install
+      script
+      deploy
+    allow-failure: false
