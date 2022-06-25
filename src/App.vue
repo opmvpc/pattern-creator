@@ -14,6 +14,7 @@ import { ClearBoardCommand } from "./models/Commands/ClearBoardCommand";
 import { InverseBoardCommand } from "./models/Commands/InverseBoardCommand";
 import ControlsComponent from "./components/ControlsComponent.vue";
 import { ToggleCellCommand } from "./models/Commands/ToggleCellCommand";
+import { DrawCommand } from "./models/Commands/DrawCommand";
 
 const commandInvoker = new Invoker();
 const size = ref(10);
@@ -50,6 +51,10 @@ const invert = () => {
 const toggleCell = (index: number) => {
   commandInvoker.execute(new ToggleCellCommand(board.value, index));
 };
+
+const draw = (points: number[]) => {
+  commandInvoker.execute(new DrawCommand(board.value, points));
+};
 </script>
 
 <template>
@@ -77,7 +82,7 @@ const toggleCell = (index: number) => {
         <BoardComponent
           :size="size"
           :cells="board.cells"
-          @board:toggle="toggleCell"
+          @board:draw="draw"
         ></BoardComponent>
       </div>
       <ControlsComponent

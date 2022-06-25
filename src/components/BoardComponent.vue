@@ -8,12 +8,15 @@ const props = defineProps({
   cells: { type: Array, required: true },
 });
 
-const emit = defineEmits(["board:toggle"]);
+const emit = defineEmits(["board:draw"]);
 
 const cellWidth = ref(0);
 const colCount = computed(() => {
   return props.size;
 });
+
+let isDrawing = false;
+let pointsToDraw: number[] = [];
 
 watch(colCount, () => {
   cellWidth.value = computeCellWidth();
@@ -29,18 +32,30 @@ const computeCellWidth = () => {
 };
 
 const handleCellClick = (event: Event, index: number) => {
-  drawOnCell(index);
+  isDrawing = true;
+  drawOnCell(event, index);
 };
 
 const handleCellDragToDraw = (event: PointerEvent, index: number) => {
   if (event.buttons !== 1) {
     return;
   }
-  drawOnCell(index);
+  drawOnCell(event, index);
 };
 
-const drawOnCell = (index: number) => {
-  emit("board:toggle", index);
+const drawOnCell = (event: Event, index: number) => {
+  const cell = event.target as HTMLDivElement;
+  cell.style.backgroundColor =
+    cell.style.backgroundColor === "black" ? "white" : "black";
+  if (isDrawing) {
+    pointsToDraw.push(index);
+  }
+};
+
+const handleStopDrawing = () => {
+  isDrawing = false;
+  emit("board:draw", pointsToDraw);
+  pointsToDraw = [];
 };
 
 onMounted(() => {
@@ -65,6 +80,7 @@ onUnmounted(() => {
         class="cell flex items-center justify-center border border-black cursor-pointer"
         v-for="(cell, n) in cells"
         @mousedown.prevent="handleCellClick($event, n)"
+        @mouseup="handleStopDrawing()"
         @pointerover.prevent="handleCellDragToDraw($event, n)"
         :style="`background-color: ${(cell as Cell).getValue() ? 'black' : 'white'};`"
       ></div>

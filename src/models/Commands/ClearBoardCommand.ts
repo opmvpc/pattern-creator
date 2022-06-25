@@ -15,6 +15,11 @@ export class ClearBoardCommand extends AbstractUndoableCommand {
   }
 
   execute(): void {
+    const cells = document.querySelectorAll(".cell") as NodeListOf<HTMLElement>;
+    for (const cell of cells) {
+      cell.style.backgroundColor = "white";
+    }
+
     this.board.cells = new Board(this.size).cells;
   }
 

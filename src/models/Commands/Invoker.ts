@@ -7,7 +7,7 @@ export class Invoker {
 
   constructor() {
     this.commandsHistory = [];
-    this.currentCommandIndex = 0;
+    this.currentCommandIndex = -1;
   }
 
   public execute(command: CommandContract): void {
@@ -21,8 +21,6 @@ export class Invoker {
     }
 
     command.execute();
-    console.log(this.currentCommandIndex);
-    console.log(this.commandsHistory);
   }
 
   public clear(): void {
@@ -35,14 +33,29 @@ export class Invoker {
   }
 
   public undo(): void {
-    if (this.current !== undefined && this.commandsHistory.length > 0) {
+    if (this.current !== undefined && this.hasPrevious) {
       (this.current as UndoableCommandContract).undo();
       this.previous();
     }
   }
 
+  private get hasPrevious(): boolean {
+    return this.currentCommandIndex >= 0;
+  }
+
   private previous(): void {
-    this.currentCommandIndex--;
+    if (this.hasPrevious) {
+      this.currentCommandIndex--;
+    }
+  }
+
+  public redo(): void {
+    if (this.hasNext) {
+      this.next();
+      if (this.current !== undefined) {
+        (this.current as UndoableCommandContract).execute();
+      }
+    }
   }
 
   private next(): void {
@@ -57,16 +70,5 @@ export class Invoker {
 
   private get hasNext(): boolean {
     return this.currentCommandIndex < this.commandsHistory.length - 1;
-  }
-
-  public redo(): void {
-    if (this.commandsHistory.length > 0 && this.hasNext) {
-      this.next();
-      if (this.current !== undefined) {
-        console.log(this.currentCommandIndex);
-
-        (this.current as UndoableCommandContract).execute();
-      }
-    }
   }
 }
