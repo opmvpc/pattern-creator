@@ -1,8 +1,6 @@
-import type { AppError } from "../AppError";
-import { Board } from "../Board";
+import type { AppError } from "../types/AppError";
 import type { CommandContract } from "./Contracts/CommandContract";
 import type { UndoableCommandContract } from "./Contracts/UndoableCommandContract";
-import { LoadCommand } from "./LoadCommand";
 import { OriginalBoardCommand } from "./OriginalBoardCommand";
 
 export class Invoker {

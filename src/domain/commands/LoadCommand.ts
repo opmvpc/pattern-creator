@@ -1,8 +1,8 @@
-import type { AppState } from "../AppState";
-import type { Board } from "../Board";
-import type { PatternName } from "../PatternName";
-import type { Size } from "../Size";
-import { Storage } from "../Storage";
+import type { AppState } from "@/domain/types/AppState";
+import type { Board } from "@/domain/models/Board";
+import type { PatternName } from "@/domain/types/PatternName";
+import type { Size } from "@/domain/types/Size";
+import { Storage } from "@/domain/services/Storage";
 import { AbstractCommand } from "./AbstractCommand";
 
 export class LoadCommand extends AbstractCommand {

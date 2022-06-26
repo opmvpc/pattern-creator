@@ -1,5 +1,5 @@
-import type { AppState } from "../AppState";
-import type { Board } from "../Board";
+import type { AppState } from "@/domain/types/AppState";
+import type { Board } from "@/domain/models/Board";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
 export class InverseBoardCommand extends AbstractUndoableCommand {

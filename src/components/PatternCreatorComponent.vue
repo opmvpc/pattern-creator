@@ -6,12 +6,12 @@ import SaveComponent from "@/components/Controls/SaveComponent.vue";
 import LoadComponent from "@/components/Controls/LoadComponent.vue";
 import ControlsComponent from "@/components/Controls/ControlsComponent.vue";
 import ErrorMessageComponent from "@/components/ErrorMessageComponent.vue";
-import type { AppState } from "@/models/AppState";
+import type { AppState } from "@/domain/types/AppState";
 import {
   init,
   commandsInit,
   registerKeyboardShortcuts,
-} from "@/components/patternCreator";
+} from "@/domain/services/PatternCreatorService";
 
 const state: AppState = init();
 const commands = commandsInit(state);

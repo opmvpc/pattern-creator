@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Cell } from "@/models/Cell";
-import { init } from "./BoardComponentService";
-import type { BoardComponentState } from "./BoardComponentState";
+import type { Cell } from "@/domain/models/Cell";
+import { init } from "@/domain/services/BoardComponentService";
+import type { BoardComponentState } from "@/domain/types/BoardComponentState";
 
 const emit = defineEmits(["board:draw"]);
 

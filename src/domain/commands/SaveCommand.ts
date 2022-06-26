@@ -1,5 +1,5 @@
-import type { AppState } from "../AppState";
-import { Storage } from "../Storage";
+import type { AppState } from "@/domain/types/AppState";
+import { Storage } from "@/domain/services/Storage";
 import { AbstractCommand } from "./AbstractCommand";
 
 export class SaveCommand extends AbstractCommand {

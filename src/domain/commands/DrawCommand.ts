@@ -1,4 +1,4 @@
-import type { AppState } from "../AppState";
+import type { AppState } from "@/domain/types/AppState";
 import { CompositeCommand } from "./CompositeCommand";
 import { ToggleCellCommand } from "./ToggleCellCommand";
 

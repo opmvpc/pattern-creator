@@ -1,6 +1,6 @@
-import type { Board } from "./Board";
-import type { Invoker } from "./Commands/Invoker";
-import type { PatternName } from "./PatternName";
+import type { Board } from "@/domain/models/Board";
+import type { Invoker } from "@/domain/commands/Invoker";
+import type { PatternName } from "@/domain/types/PatternName";
 import type { Size } from "./Size";
 
 export interface AppState {

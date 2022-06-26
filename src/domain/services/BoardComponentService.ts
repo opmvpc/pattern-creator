@@ -1,5 +1,5 @@
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
-import type { BoardComponentState } from "./BoardComponentState";
+import type { BoardComponentState } from "@/domain/types/BoardComponentState";
 
 const init = (props: any): BoardComponentState => {
   let isDrawing = false;

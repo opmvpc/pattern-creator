@@ -1,6 +1,6 @@
-import type { AppState } from "../AppState";
-import type { Board } from "../Board";
-import type { Cell } from "../Cell";
+import type { AppState } from "@/domain/types/AppState";
+import type { Board } from "@/domain/models/Board";
+import type { Cell } from "@/domain/models/Cell";
 import { AbstractUndoableCommand } from "./AbstractUndoableCommand";
 
 export class UpdateBoardFromCodeCommand extends AbstractUndoableCommand {

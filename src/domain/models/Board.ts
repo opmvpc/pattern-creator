@@ -1,6 +1,6 @@
-import { Cell } from "@/models/Cell";
-import type { Code } from "./Code";
-import type { Size } from "./Size";
+import { Cell } from "@/domain/models/Cell";
+import type { Code } from "@/domain/types/Code";
+import type { Size } from "@/domain/types/Size";
 
 export class Board {
   public cells: Cell[];

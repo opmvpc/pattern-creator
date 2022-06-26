@@ -1,13 +1,13 @@
-import type { AppState } from "@/models/AppState";
-import { Board } from "@/models/Board";
-import { ClearBoardCommand } from "@/models/Commands/ClearBoardCommand";
-import { DrawCommand } from "@/models/Commands/DrawCommand";
-import { InverseBoardCommand } from "@/models/Commands/InverseBoardCommand";
-import { Invoker } from "@/models/Commands/Invoker";
-import { LoadCommand } from "@/models/Commands/LoadCommand";
-import { SaveCommand } from "@/models/Commands/SaveCommand";
-import { UpdateBoardFromCodeCommand } from "@/models/Commands/UpdateBoardFromCodeCommand";
-import { Storage } from "@/models/Storage";
+import type { AppState } from "@/domain/types/AppState";
+import { Board } from "@/domain/models/Board";
+import { ClearBoardCommand } from "@/domain/commands/ClearBoardCommand";
+import { DrawCommand } from "@/domain/commands/DrawCommand";
+import { InverseBoardCommand } from "@/domain/commands/InverseBoardCommand";
+import { Invoker } from "@/domain/commands/Invoker";
+import { LoadCommand } from "@/domain/commands/LoadCommand";
+import { SaveCommand } from "@/domain/commands/SaveCommand";
+import { UpdateBoardFromCodeCommand } from "@/domain/commands/UpdateBoardFromCodeCommand";
+import { Storage } from "@/domain/services/Storage";
 import { onMounted, onUnmounted, reactive } from "vue";
 
 export const init = (): AppState => {
