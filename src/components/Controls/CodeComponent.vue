@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "@vue/reactivity";
+import { computed } from "@vue/reactivity";
 
 defineEmits(["code:update"]);
 const props = defineProps({

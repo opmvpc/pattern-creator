@@ -1,35 +1,17 @@
 <script setup lang="ts">
-import { defineProps, onMounted, onUnmounted, ref, watch } from "vue";
 import type { Cell } from "@/models/Cell";
-import { computed } from "@vue/reactivity";
+import { init } from "./BoardComponentService";
+import type { BoardComponentState } from "./BoardComponentState";
+
+const emit = defineEmits(["board:draw"]);
 
 const props = defineProps({
   size: { type: Number, required: true },
   cells: { type: Array, required: true },
 });
 
-const emit = defineEmits(["board:draw"]);
-
-const cellWidth = ref(0);
-const colCount = computed(() => {
-  return props.size;
-});
-
-let isDrawing = false;
-let pointsToDraw: number[] = [];
-
-watch(colCount, () => {
-  cellWidth.value = computeCellWidth();
-});
-
-const computeCellWidth = () => {
-  const container = document.querySelector("#board-grid") as HTMLDivElement;
-  if (!container) {
-    return 0;
-  }
-  const containerWidth = container.offsetWidth;
-  return Math.ceil(containerWidth / colCount.value) - 2;
-};
+let { isDrawing, pointsToDraw, cellWidth, colCount }: BoardComponentState =
+  init(props);
 
 const handleCellClick = (event: Event, index: number) => {
   isDrawing = true;
@@ -57,19 +39,6 @@ const handleStopDrawing = () => {
   emit("board:draw", pointsToDraw);
   pointsToDraw = [];
 };
-
-const resizeHandler = () => {
-  cellWidth.value = computeCellWidth();
-};
-
-onMounted(() => {
-  cellWidth.value = computeCellWidth();
-  window.addEventListener("resize", resizeHandler);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("resize", resizeHandler);
-});
 </script>
 
 <template>
